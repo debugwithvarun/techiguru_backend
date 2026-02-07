@@ -15,7 +15,7 @@ const app = express();
 
 app.use(cors({
     // origin: 'http://localhost:5173', 
-    origin: 'https://techiguru.vercel.app/', 
+    origin: 'https://techiguru.vercel.app', 
     credentials: true
 }));
 
