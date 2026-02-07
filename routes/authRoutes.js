@@ -1,0 +1,19 @@
+const express = require('express');
+const router = express.Router();
+const {
+  registerUser,
+  loginUser,
+  getMe,
+} = require('../controllers/authController');
+const { protect } = require('../middleware/authMiddleware');
+
+// Public Routes
+router.post('/register', registerUser);
+router.post('/login', loginUser);
+
+// Protected Routes
+// Retrieves the current logged-in user's data (using the Token)
+router.get('/me', protect, getMe);
+router.put('/profile', protect, updateUserProfile)
+
+module.exports = router;
