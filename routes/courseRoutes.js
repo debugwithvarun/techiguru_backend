@@ -16,7 +16,8 @@ const { protect, authorize } = require('../middleware/authMiddleware');
 // --- MULTER CONFIGURATION (For Image Upload) ---
 const storage = multer.diskStorage({
   destination(req, file, cb) {
-    cb(null, 'uploads/'); // Ensure this folder exists in backend root
+    // Make sure to create this 'uploads' folder in your server root or it will throw an error
+    cb(null, 'uploads/'); 
   },
   filename(req, file, cb) {
     cb(null, `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`);
@@ -44,7 +45,7 @@ const upload = multer({
 
 // --- ROUTES ---
 
-// Upload Route (Must be before /:id to avoid conflict)
+// Upload Route (Placed before /:id to avoid ID conflicts)
 router.post('/upload', protect, upload.single('image'), uploadCourseImage);
 
 router

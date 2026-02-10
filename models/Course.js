@@ -18,8 +18,14 @@ const lessonSchema = new mongoose.Schema({
     required: function() { return this.type === 'video'; }
   },
   videoDuration: {
-    type: Number, // Stored in seconds or minutes
+    type: Number, // Stored in seconds
     default: 0
+  },
+  // --- NEW FIELD ADDED HERE ---
+  description: {
+    type: String, 
+    trim: true,
+    default: '' 
   },
   content: {
     type: String, // Markdown content for text lessons
@@ -68,7 +74,6 @@ const courseSchema = new mongoose.Schema({
   category: {
     type: String,
     required: [true, 'Please select a category'],
-    // Align these with your Frontend Select Options
     enum: ['Development', 'Business', 'Design', 'Marketing', 'Lifestyle', 'IT & Software']
   },
   level: {
@@ -90,7 +95,6 @@ const courseSchema = new mongoose.Schema({
     type: Number,
     validate: {
       validator: function(val) {
-        // Discount price must be less than regular price
         return !val || val <= this.price; 
       },
       message: 'Discount price ({VALUE}) should be less than regular price'
@@ -113,7 +117,7 @@ const courseSchema = new mongoose.Schema({
   },
   // Learning Data
   learningPoints: {
-    type: [String], // "What you will learn"
+    type: [String],
     validate: [arrayLimit, '{PATH} exceeds the limit of 15 points']
   },
   requirements: {
@@ -155,16 +159,13 @@ const courseSchema = new mongoose.Schema({
 // --- INDEXES ---
 courseSchema.index({ title: 'text', description: 'text', category: 'text' });
 
-// --- MIDDLEWARE (Fixed) ---
-// Using async function without 'next' parameter to prevent Mongoose errors
+// --- MIDDLEWARE ---
 courseSchema.pre('save', async function() {
   if (this.isModified('title')) {
-    // Generate slug from title
     this.slug = slugify(this.title, { lower: true, strict: true });
   }
 });
 
-// Helper validation function
 function arrayLimit(val) {
   return val.length <= 15;
 }

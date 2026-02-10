@@ -36,9 +36,7 @@ const protect = async (req, res, next) => {
   }
 };
 
-// --- 2. AUTHORIZE MIDDLEWARE (Authorization) ---
-// Restricts access to specific user roles
-// Usage: router.post('/', protect, authorize('admin', 'instructor'), createCourse);
+
 const authorize = (...roles) => {
   return (req, res, next) => {
     if (!req.user) {
