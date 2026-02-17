@@ -2,13 +2,13 @@ const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const connectDB = require('./config/db');
-const path = require('path'); // <--- 1. Import 'path' at the top
+const path = require('path');
 
 const authRoutes = require('./routes/authRoutes');
 const courseRoutes = require('./routes/courseRoutes');
+const certificateRoutes = require('./routes/certificateRoutes'); // <-- Imported here
 
 dotenv.config();
-
 
 connectDB();
 const app = express();
@@ -22,19 +22,26 @@ app.use(cors({
 
 app.use(express.json());
 
+// --- MOUNT ROUTES ---
 app.use('/api/auth', authRoutes);
 app.use('/api/courses', courseRoutes);
+app.use('/api/certificates', certificateRoutes); // <-- Mounted here
+
+// Static folder for uploaded images
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 app.get('/', (req, res) => {
   res.send('API is running...');
 });
 
+// 404 Error Handler
 app.use((req, res, next) => {
   const error = new Error(`Not Found - ${req.originalUrl}`);
   res.status(404);
   next(error);
 });
 
+// Global Error Handler
 app.use((err, req, res, next) => {
   const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
   res.status(statusCode);
